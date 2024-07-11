@@ -6,11 +6,16 @@ module.exports = (env, argv) => {
 
   return {
     mode: isProduction ? 'production' : 'development',
-    entry: "./src/index.tsx",
-    target: "web",
+    entry: isProduction ? "./src/main.ts" : "./src/index.tsx",
+    target: "web",  // Ensures compatibility with web browsers
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "client_bundle.js",
+      filename: "main.js",
+      clean: true,
+      library: {
+          name: "react-webpack-lib-tith",
+          type: "umd"  // Ensures compatibility with different module systems
+      },
     },
     resolve: {
       extensions: [".js", ".jsx", ".ts", ".tsx"],
@@ -25,7 +30,7 @@ module.exports = (env, argv) => {
         {
           test: /\.(ts|tsx)$/,
           exclude: /node_modules/,
-          use: "ts-loader",
+          use: "ts-loader",  // Compiles TypeScript files
         },
         {
           test: /\.(js|jsx)$/,
@@ -38,14 +43,25 @@ module.exports = (env, argv) => {
           }
         },
         {
-          test: /\.css$/i, // styles files
-          use: ['style-loader', 'css-loader'],
+          test: /\.css$/i,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+              },
+            },
+            'postcss-loader'
+          ],
         },
         {
           test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-          type: "asset/resource"
+          type: "asset/resource"  // Manages static assets
         }
       ]
-    }
+    },
+    devServer: {port: 3030},  // Configuration for webpack-dev-server
+    devtool: isProduction ? false : 'eval-source-map',  // Generate source maps only for development
   }
 }

@@ -1,0 +1,35 @@
+# Exclude some files in dist
+/dist/App.d.ts
+/dist/index.d.ts
+/dist/index.html
+
+# Ignore storybook files in components folder
+dist/components/**/*.stories.*
+
+# Exclude source code
+/src
+
+# Exclude node modules
+/node_modules
+
+# Exclude environment variables
+.env
+
+# Exclude system-specific files
+.DS_Store
+
+# Exclude TypeScript configuration
+tsconfig.json
+
+# Exclude build and editor configurations
+/build
+/.git
+/.vscode
+/.idea
+
+# Exclude build scripts and configurations
+webpack.config.js
+
+# Exclude Tailwind configuration
+tailwind.config.js
+postcss.config.js
