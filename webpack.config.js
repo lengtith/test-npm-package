@@ -1,13 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = [
-  {
-    entry: "./src/client/index.tsx",
-    mode: "development",
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+
+  return {
+    mode: isProduction ? 'production' : 'development',
+    entry: "./src/index.tsx",
     target: "web",
     output: {
-      path: path.resolve(__dirname, "dist/client"),
+      path: path.resolve(__dirname, "dist"),
       filename: "client_bundle.js",
     },
     resolve: {
@@ -15,7 +17,7 @@ module.exports = [
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: "src/client/index.html",
+        template: "src/index.html",
       })
     ],
     module: {
@@ -46,4 +48,4 @@ module.exports = [
       ]
     }
   }
-]
+}
