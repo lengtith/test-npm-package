@@ -2,9 +2,12 @@
 /dist/App.d.ts
 /dist/index.d.ts
 /dist/index.html
+# /dist/index.js
+# /dist/index.d.ts
 
-# Ignore storybook files in components folder
+# Ignore storybook files in components, src folder
 dist/components/**/*.stories.*
+dist/src
 
 # Exclude source code
 /src

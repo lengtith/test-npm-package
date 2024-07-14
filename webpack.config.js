@@ -6,15 +6,15 @@ module.exports = (env, argv) => {
 
   return {
     mode: isProduction ? 'production' : 'development',
-    entry: isProduction ? "./src/main.ts" : "./src/index.tsx",
+    entry: isProduction ? "./index.ts" : "./src/index.tsx",
     target: "web",  // Ensures compatibility with web browsers
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "main.js",
+      filename: "index.js",
       clean: true,
       library: {
-          name: "react-webpack-lib-tith",
-          type: "umd"  // Ensures compatibility with different module systems
+        name: "react-webpack-lib-tith",
+        type: "umd"  // Ensures compatibility with different module systems
       },
     },
     resolve: {
@@ -43,16 +43,22 @@ module.exports = (env, argv) => {
           }
         },
         {
-          test: /\.css$/i,
+          test: /\.css$/,
           use: [
             'style-loader',
+            'css-loader',
             {
-              loader: 'css-loader',
+              loader: 'postcss-loader',
               options: {
-                importLoaders: 1,
+                postcssOptions: {
+                  ident: 'postcss',
+                  plugins: [
+                    require('tailwindcss'),
+                    require('autoprefixer'),
+                  ],
+                },
               },
             },
-            'postcss-loader'
           ],
         },
         {
@@ -61,7 +67,7 @@ module.exports = (env, argv) => {
         }
       ]
     },
-    devServer: {port: 3030},  // Configuration for webpack-dev-server
+    devServer: { port: 3030 },  // Configuration for webpack-dev-server
     devtool: isProduction ? false : 'eval-source-map',  // Generate source maps only for development
   }
 }

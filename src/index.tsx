@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import "./index.css";
+import "./tailwind.css";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Cannot find root element with id root");

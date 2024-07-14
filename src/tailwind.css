@@ -1,4 +1,7 @@
-/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background-color: #F3F4F6;
+}
