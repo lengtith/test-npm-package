@@ -6,7 +6,7 @@ module.exports = (env, argv) => {
 
   return {
     mode: isProduction ? 'production' : 'development',
-    entry: isProduction ? "./index.ts" : "./src/index.tsx",
+    entry: isProduction ? "./src/main.ts" : "./src/index.tsx",
     target: "web",  // Ensures compatibility with web browsers
     output: {
       path: path.resolve(__dirname, "dist"),

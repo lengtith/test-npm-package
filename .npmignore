@@ -24,6 +24,15 @@ dist/src
 # Exclude TypeScript configuration
 tsconfig.json
 
+# Prettierrc
+.prettierrc
+
+# Eslintrc
+.eslintrc.js
+
+# Global configuration
+global.d.ts
+
 # Exclude build and editor configurations
 /build
 /.git
@@ -36,3 +45,6 @@ webpack.config.js
 # Exclude Tailwind configuration
 tailwind.config.js
 postcss.config.js
+
+# Log files
+*.log
