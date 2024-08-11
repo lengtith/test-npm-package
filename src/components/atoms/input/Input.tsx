@@ -4,16 +4,15 @@ import { twMerge } from "tailwind-merge";
 export interface InputProps {
   id?: string;
   name?: string;
-  type?: "text" | "number" | "email" | "password" | "tel" | "hidden";
+  type?: "text" | "number" | "email" | "password" | "tel" | "time" | "date" | "hidden";
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  value?: any;
+  value?: string;
   label?: string;
   className?: string;
   customError?: string;
   isSubmitted?: boolean;
-
   validate?: (value: string) => string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -35,15 +34,14 @@ const Input: React.FC<InputProps> = ({
   ...rest
 }) => {
   const isControlled = value !== undefined;
-  const [internalValue, setInterinternalValue] = useState(value || "");
-  const [error, setError] = useState<boolean>(false);
+  const [internalValue, setInternalValue] = useState<string>(value || "");
   const [errorText, setErrorText] = useState<string>("");
   const [isFocus, setIsFocus] = useState(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newInterinternalValue = e.target.value;
-    setInterinternalValue(newInterinternalValue);
+    const newValue = e.target.value;
+    setInternalValue(newValue);
 
     if (onChange) {
       onChange(e);
@@ -53,25 +51,21 @@ const Input: React.FC<InputProps> = ({
   const valueInput = isControlled ? value : internalValue;
 
   const handleBlur = () => {
-    let errorText = "";
+    let error = "";
+
     if (required && !valueInput) {
-      setError(true);
-      errorText = `${label || name} is required`;
+      error = `${label || name} is required`;
     }
 
-    if (
-      type === "email" &&
-      valueInput &&
-      !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(valueInput)
-    ) {
-      errorText = "Please enter a valid email address";
+    if (type === "email" && valueInput && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(valueInput)) {
+      error = "Please enter a valid email address";
     }
 
-    if (validate && !errorText) {
-      errorText = validate(valueInput);
+    if (validate && !error) {
+      error = validate(valueInput);
     }
 
-    setErrorText(errorText);
+    setErrorText(error);
     setIsFocus(false);
   };
 
@@ -83,23 +77,23 @@ const Input: React.FC<InputProps> = ({
     setShowPassword(!showPassword);
   };
 
-  // Handle user submit form to show error message
+  // Show error message on form submission
   useEffect(() => {
     if (isSubmitted && required) {
-      setError(valueInput === "" ? true : false);
       handleBlur();
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, required, handleBlur]);
 
+  // Sync internal value with controlled value
   useEffect(() => {
-    if (valueInput !== "") {
-      setError(false);
+    if (isControlled) {
+      setInternalValue(value || "");
     }
-  }, [valueInput]);
+  }, [value, isControlled]);
 
   return (
-    <div className={`${type === "hidden" ? "hidden" : "block"}`}>
-      <div className={`relative bg-gray-50 rounded-lg`}>
+    <div>
+      <div className={`relative bg-gray-50 rounded-lg ${type === "hidden" ? "hidden" : "block"}`}>
         <input
           id={id}
           name={name}
@@ -111,13 +105,17 @@ const Input: React.FC<InputProps> = ({
           onBlur={handleBlur}
           placeholder={isFocus && !valueInput ? placeholder : ""}
           required={required}
-          className={twMerge("block px-2 min-h-[46px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer", error ? "border-red-500" : "", className)}
+          className={twMerge(
+            "block px-2 min-h-[46px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer",
+            errorText ? "border-red-500" : "",
+            className
+          )}
           {...rest}
         />
 
         <label
           htmlFor={id}
-          className={twMerge("absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-inherit px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-75 peer-focus:-translate-y-1/2 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1")}
+          className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-inherit px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
         >
           {label || name} {required && <span className="text-red-500">*</span>}
         </label>
@@ -133,8 +131,7 @@ const Input: React.FC<InputProps> = ({
           </div>
         )}
       </div>
-
-      {(error || customError) && (
+      {(errorText || customError) && (
         <span className="block text-red-500 text-xs mt-1.5">{customError || errorText}</span>
       )}
     </div>

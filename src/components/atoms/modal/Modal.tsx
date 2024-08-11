@@ -1,42 +1,81 @@
-import React, { ReactNode, useEffect, useState } from "react";
-import ReactDOM from 'react-dom';
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { twMerge } from "tailwind-merge";
+import ReactDOM from 'react-dom';
+import { Button, ButtonIcon } from "../button";
+import { Icon } from "../icon";
 
-export interface ModalProps {
-  open: boolean;
-  children?: ReactNode;
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  size?: "full" | "2xl" | "xl" | "lg" | "md" | "sm" | "xs";
   className?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full";
 }
 
-const sizeClasses = {
-  xs: "max-w-xs w-2/12",
-  sm: "max-w-sm w-4/12",
-  md: "max-w-md w-6/12",
-  lg: "max-w-lg w-7/12",
-  xl: "max-w-xl w-8/12",
-  "2xl": "max-w-5xl w-9/12",
-  "3xl": "max-w-7xl w-10/12",
-  "4xl": "max-w-7xl w-11/12",
-  full: "w-full",
-};
-
-const Modal: React.FC<ModalProps> = ({
-  open,
+const Modal: React.FC<PropsWithChildren<Partial<ModalProps>>> = ({
+  isOpen,
+  onClose,
   children,
-  className,
-  size = "md",
+  size = "lg",
+  className
 }) => {
-  const widthClass = sizeClasses[size];
+  const [show, setShow] = useState(isOpen);
+  const [visible, setVisible] = useState(isOpen);
+  const scrollPositionRef = useRef(0);
 
+  const getSizeClass: any = ({
+    "full": "max-w-full h-screen",
+    "2xl": "max-w-2xl",
+    xl: "max-w-xl",
+    lg: "max-w-lg",
+    md: "max-w-md",
+    sm: "max-w-sm",
+    xs: "max-w-xs"
+  });
+
+  useEffect(() => {
+    const body = document.body;
+    if (isOpen) {
+      scrollPositionRef.current = window.scrollY;
+      setVisible(true);
+      setTimeout(() => setShow(true), 10); // Adding a small timeout to allow for transition
+      body.classList.add('lock-scrollbar');
+      body.style.top = `-${scrollPositionRef.current}px`;
+      body.style.overflow = 'hidden';
+    } else {
+      setShow(false);
+      setTimeout(() => setVisible(false), 300); // Match the duration with transition duration
+      body.classList.remove('lock-scrollbar');
+      body.style.overflow = '';
+      body.style.top = '';
+      window.scrollTo(0, scrollPositionRef.current);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('lock-scrollbar');
+      document.body.style.overflow = '';
+      document.body.style.top = '';
+    };
+  }, []);
+
+  if (!visible) return null;
 
   return ReactDOM.createPortal(
     <div
-      className={`fixed inset-0 flex justify-center items-center py-4 top-0 left-0 right-0 z-50 backdrop-brightness-50 transition-all duration-300 ease-linear ${open ? "opacity-100 visible" : "opacity-0 invisible"}`}
+      id='sabai-ui-modal'
+      className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300 ${show ? 'opacity-100' : 'opacity-0'}`}
     >
       <div
-        className={twMerge("bg-white max-h-[800px] overflow-auto rounded-lg transition-all duration-300 ease-in-out", widthClass , open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4", className)}
+        className={`fixed inset-0 bg-black transition-opacity duration-300 ${show ? 'opacity-50' : 'opacity-0'}`}
+        onClick={onClose}
+      ></div>
+      <div
+        className={twMerge("bg-white p-6 rounded shadow-lg z-10 w-full transform transition-transform duration-300", getSizeClass[size], className, show ? 'scale-100' : 'scale-90')}
       >
+        <Button size="sm" className='absolute top-2 right-2 p-2 rounded-full' variant="ghost" colorScheme="secondary" onClick={onClose}>
+          <Icon icon="close" size={16}/>
+        </Button>
         {children}
       </div>
     </div>,

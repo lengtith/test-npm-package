@@ -2,6 +2,8 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export interface SwitchProps {
+  id?: string;
+  name?: string;
   checked?: boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   size?: "sm" | "md" | "lg";
@@ -10,6 +12,8 @@ export interface SwitchProps {
 }
 
 const Switch: React.FC<SwitchProps> = ({
+  id,
+  name,
   checked: controlledChecked,
   onChange,
   size = "md",
@@ -58,6 +62,8 @@ const Switch: React.FC<SwitchProps> = ({
       className={twMerge("flex items-center gap-2 cursor-pointer", disabled && "opacity-50 cursor-not-allowed")}
     >
       <input
+        id={id}
+        name={name}
         type="checkbox"
         className="hidden"
         checked={isChecked}

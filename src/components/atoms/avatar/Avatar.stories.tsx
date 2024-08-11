@@ -23,7 +23,6 @@ const meta: Meta<typeof Avatar> = {
     },
     isDisabled: { control: 'boolean' },
     name: { control: 'text' },
-    icon: { control: 'text' },
     className: { control: 'text' },
     onClick: { action: 'clicked' },
   },
@@ -39,7 +38,6 @@ export const Small: Story = {
     radius: 'full',
     isDisabled: false,
     name: 'Small Avatar',
-    icon: 'student',
     className: '',
   },
 };
@@ -50,7 +48,6 @@ export const Medium: Story = {
     radius: 'full',
     isDisabled: false,
     name: 'Medium Avatar',
-    icon: 'student',
     className: '',
   },
 };
@@ -61,7 +58,6 @@ export const Large: Story = {
     radius: 'full',
     isDisabled: false,
     name: 'Large Avatar',
-    icon: 'student',
     className: '',
   },
 };
@@ -72,7 +68,6 @@ export const Disabled: Story = {
     radius: 'full',
     isDisabled: true,
     name: 'Disabled Avatar',
-    icon: 'student',
     className: '',
   },
 };
@@ -83,7 +78,6 @@ export const CustomRadius: Story = {
     radius: 'lg',
     isDisabled: false,
     name: 'Custom Radius Avatar',
-    icon: 'student',
     className: '',
   },
 };

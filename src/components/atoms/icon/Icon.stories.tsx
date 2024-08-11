@@ -12,7 +12,7 @@ const meta: Meta<typeof Icon> = {
     layout: 'centered'
   },
   argTypes: {
-    icon: { control: 'select', options: ["arrowDown", "arrowUp", "course", "add", "cancel", "class", "coach", "contact", "dashboard", "dropdown", "invoice", "item", "list", "material", "menu", "report", "scholarship", "search", "student", "clock", "document-text", "academic-cap", "arrow-long-left", "chart-bar-square", "clock-1", "drag", "dropdown-1", "filter", "link", "list-bullet", "menu-1", "pencil", "pencil-square", "tick", "trash", "upload", "email", "phone", "arrow-up-tray", "image", "video", "excel", "word", "pdf", "power-point", "logout"], },
+    icon: { control: 'select', options: ["arrowDown", "arrowUp", "course", "add", "cancel", "class", "coach", "contact", "dashboard", "dropdown", "invoice", "item", "list", "material", "menu", "report", "scholarship", "search", "student", "clock", "document-text", "academic-cap", "arrow-long-left", "chart-bar-square", "clock-1", "drag", "dropdown-1", "filter", "link", "list-bullet", "menu-1", "pencil", "pencil-square", "tick", "trash", "upload", "email", "phone", "arrow-up-tray", "image", "video", "excel", "word", "pdf", "power-point", "logout", "user", "close"], },
     size: { control: 'text' },
     className: { control: 'text' },
   },

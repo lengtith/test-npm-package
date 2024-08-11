@@ -9,6 +9,9 @@
 dist/components/**/*.stories.*
 dist/src
 
+# Storybook
+/.storybook
+
 # Exclude source code
 /src
 
@@ -48,3 +51,6 @@ postcss.config.js
 
 # Log files
 *.log
+
+# Babel
+babel.config.json

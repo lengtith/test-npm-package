@@ -28,10 +28,10 @@ interface DataCatalogProps {
   loading: boolean;
   layouts: Layout[];
   filters: Filter[];
-  onScroll(): void;
+  onScroll?: () => void;
   onItemClick: (itemData: any) => void;
   onSort: (sortData: SortData) => void;
-  onFilter: ({ name, value }: any) => void;
+  onFilter?: ({ name, value }: any) => void;
   onFetchMoreData?: () => void;
 }
 
@@ -92,7 +92,7 @@ const DataCatalog: React.FC<DataCatalogProps> = ({
       <div className="flex justify-between items-center px-8 py-6">
         {/* select */}
         <div className="flex gap-5">
-          {filters.map((item: any, index) => {
+          {onFilter && filters.map((item: any, index) => {
             return (
               <div key={index}>
                 {item.component((value: string) =>

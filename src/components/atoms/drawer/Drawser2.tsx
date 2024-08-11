@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import ReactDOM from 'react-dom';
+import { DrawerProvider } from "./DrawerContext";
 
 export interface DrawerProps {
   isOpen: boolean;
@@ -91,47 +92,19 @@ export const Drawer: React.FC<DrawerProps> = ({
   );
 
   return ReactDOM.createPortal(
-    <div>
-      <div className={backdropClasses} aria-hidden={!show} />
-      <div className={drawerClasses} role="dialog" aria-modal={show} aria-hidden={!show}>
-        {children}
+    <DrawerProvider isOpen={show} onClose={onClose!}>
+      <div>
+        <div className={backdropClasses} aria-hidden={!show} />
+        <div
+          className={drawerClasses}
+          role="dialog"
+          aria-modal={show}
+          aria-hidden={!show}
+        >
+          {children}
+        </div>
       </div>
-    </div>
-  , document.body);
+    </DrawerProvider>
+    , document.body
+  )
 };
-
-interface DrawerHeaderProps {
-  onClose: () => void;
-  className?: string;
-  children: ReactNode;
-}
-
-export const DrawerHeader: React.FC<DrawerHeaderProps> = ({ onClose, className, children }) => (
-  <div className={twMerge("flex-none flex justify-between items-center p-4 font-semibold text-lg", className)}>
-    {children}
-    <button
-      onClick={onClose}
-      className="ml-4 text-gray-500 hover:text-gray-900"
-    >
-      &#10005;
-    </button>
-  </div>
-);
-
-interface DrawerBodyProps {
-  className?: string;
-  children: ReactNode;
-}
-
-export const DrawerBody: React.FC<DrawerBodyProps> = ({ className, children }) => (
-  <div className={twMerge("flex-grow p-4", className)}>{children}</div>
-);
-
-interface DrawerFooterProps {
-  className?: string;
-  children: ReactNode;
-}
-
-export const DrawerFooter: React.FC<DrawerFooterProps> = ({ className, children }) => (
-  <div className={twMerge("flex-none p-4", className)}>{children}</div>
-);

@@ -5,3 +5,13 @@
 body {
   background-color: #F3F4F6;
 }
+
+@layer components {
+  .lock-scrollbar {
+    overflow-y: scroll !important;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}

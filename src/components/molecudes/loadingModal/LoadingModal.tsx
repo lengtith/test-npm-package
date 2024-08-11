@@ -1,4 +1,4 @@
-import { Modal, Button } from "../../../components";
+import { Modal, Button, ButtonIcon } from "../../../components";
 import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 
@@ -8,9 +8,6 @@ interface LoadingModalProps {
   error: boolean;
   delay?: number;
 }
-
-import success from "./images/success.png";
-import failed from "./images/failed.png";
 
 const LoadingModal: React.FC<LoadingModalProps> = ({
   loading,
@@ -49,15 +46,12 @@ const LoadingModal: React.FC<LoadingModalProps> = ({
   };
 
   return (
-    <Modal open={isLoading} size="2xl" className="h-[350px]">
-      <div className="relative p-14 w-full h-full flex flex-col items-center gap-10 justify-center">
+    <Modal isOpen={isLoading} onClose={handleClose}>
+      <div className="relative p-14 w-full h-fit flex flex-col items-center gap-10 justify-center">
         {isError && (
           <>
-            <div className="absolute top-4 right-8">
-              <Button onClick={handleClose} />
-            </div>
             <img
-              src={failed}
+              src="./images/failed.png"
               alt="failed"
               className="w-[60px] h-[60px] object-center"
             />
@@ -89,7 +83,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({
         {!isError && !isProgress && isSuccess && (
           <>
             <img
-              src={success}
+              src="./images/success.png"
               alt="success"
               className="w-[60px] h-[60px] object-center"
             />

@@ -10,12 +10,14 @@ module.exports = (env, argv) => {
     target: "web",  // Ensures compatibility with web browsers
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "index.js",
+      filename: "main.js",
       clean: true,
+      globalObject: 'this',
       library: {
-        name: "react-webpack-lib-tith",
+        name: "sabai-ui-dev",
         type: "umd"  // Ensures compatibility with different module systems
       },
+      assetModuleFilename: 'images/[hash][ext][query]',
     },
     resolve: {
       extensions: [".js", ".jsx", ".ts", ".tsx"],
@@ -35,30 +37,14 @@ module.exports = (env, argv) => {
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
-            }
-          }
+          use: "babel-loader"
         },
         {
           test: /\.css$/,
           use: [
             'style-loader',
             'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  ident: 'postcss',
-                  plugins: [
-                    require('tailwindcss'),
-                    require('autoprefixer'),
-                  ],
-                },
-              },
-            },
+            'postcss-loader',
           ],
         },
         {
@@ -67,6 +53,10 @@ module.exports = (env, argv) => {
         }
       ]
     },
+    // externals: {
+    //   react: 'react',
+    //   'react-dom': 'react-dom'
+    // },
     devServer: { port: 3030 },  // Configuration for webpack-dev-server
     devtool: isProduction ? false : 'eval-source-map',  // Generate source maps only for development
   }

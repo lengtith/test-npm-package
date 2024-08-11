@@ -1,8 +1,8 @@
 {
   "name": "sabai-ui-dev",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta-6",
   "description": "A React sample component ui for frontend web development",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "types": "dist/main.d.js",
   "repository": {
     "type": "git",
@@ -16,29 +16,33 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "keywords": [],
+  "keywords": ["React"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",
     "postcss-loader": "^8.1.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1",
-    "tailwindcss": "^3.4.4"
+    "tailwindcss": "^3.4.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.8",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@chromatic-com/storybook": "^1.6.1",
-    "@storybook/addon-postcss": "^2.0.0",
     "@storybook/addon-essentials": "^8.2.2",
     "@storybook/addon-interactions": "^8.2.2",
     "@storybook/addon-links": "^8.2.2",
     "@storybook/addon-onboarding": "^8.2.2",
+    "@storybook/addon-postcss": "^2.0.0",
     "@storybook/addon-styling-webpack": "^1.0.0",
     "@storybook/addon-webpack5-compiler-swc": "^1.0.4",
     "@storybook/blocks": "^8.2.2",
@@ -53,13 +57,14 @@
     "react-icomoon": "^2.5.7",
     "react-quill": "^2.0.0",
     "react-spinners": "^0.14.1",
-    "tailwind-merge": "^2.4.0",
     "storybook": "^8.2.2",
     "style-loader": "^4.0.0",
+    "tailwind-merge": "^2.4.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4"
+    "webpack-dev-server": "^5.0.4",
+    "sabai-ui-dev": "sabai-ui-dev-1.0.0-beta-6.tgz"
   }
 }

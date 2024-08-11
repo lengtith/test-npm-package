@@ -7,62 +7,62 @@ export interface TextareaProps {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  value?: any;
+  value?: string;
   label?: string;
+  rows?: number;
+  cols?: number;
   className?: string;
   customError?: string;
   isSubmitted?: boolean;
-
   validate?: (value: string) => string;
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const Textarea: React.FC<TextareaProps> = ({
-  label,
   id,
   name,
-  required = false,
-  disabled = false,
+  label,
   value,
+  rows = 4,
+  cols,
   placeholder,
   className,
+  required = false,
+  disabled = false,
   customError,
   isSubmitted = false,
   validate,
   onChange,
   ...rest
 }) => {
-  const isControlled = value !== undefined;
-  const [internalValue, setInternalValue] = useState(value || "");
-  const [error, setError] = useState<boolean>(false);
-  const [errorText, setErrorText] = useState<string>("");
+  const [internalValue, setInternalValue] = useState<string>(value || "");
+  const [errorText, setErrorText] = useState<string | undefined>(customError);
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
-  const handleChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    setInternalValue(newValue);
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const newValue = e.target.value;
+      setInternalValue(newValue);
 
-    if (onChange) {
-      onChange(e);
-    }
-  }, [onChange]);
-
-  const valueInput = isControlled ? value : internalValue;
+      if (onChange) {
+        onChange(e);
+      }
+    },
+    [onChange]
+  );
 
   const handleBlur = useCallback(() => {
-    let errorText = "";
-    if (required && !valueInput) {
+    let errorText = customError;
+
+    if (required && !internalValue) {
       errorText = `${label || name} is required`;
-      setError(true);
+    } else if (validate) {
+      errorText = validate(internalValue);
     }
-    
-    if (validate && !errorText) {
-      errorText = validate(valueInput);
-    }
-    
+
     setErrorText(errorText);
     setIsFocused(false);
-  }, [valueInput, setIsFocused]);
+  }, [internalValue, required, validate, label, name, customError]);
 
   const handleFocus = useCallback(() => {
     setIsFocused(true);
@@ -70,16 +70,15 @@ const Textarea: React.FC<TextareaProps> = ({
 
   useEffect(() => {
     if (isSubmitted && required) {
-      setError(valueInput === "" ? true : false);
       handleBlur();
     }
-  }, [isSubmitted, required, valueInput, handleBlur]);
+  }, [isSubmitted, required, handleBlur]);
 
   useEffect(() => {
-    if (valueInput !== "") {
-      setError(false);
+    if (value !== undefined) {
+      setInternalValue(value);
     }
-  }, [valueInput]);
+  }, [value]);
 
   return (
     <div>
@@ -88,14 +87,18 @@ const Textarea: React.FC<TextareaProps> = ({
           id={id}
           name={name}
           disabled={disabled}
-          value={valueInput}
+          value={internalValue}
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          placeholder={isFocused && !valueInput ? placeholder : ""}
+          placeholder={isFocused && !internalValue ? placeholder : ""}
           required={required}
+          rows={rows}
+          cols={cols}
           className={twMerge(
-            "block px-2 pt-[11px] min-h-[46px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer", error ? "border-red-500" : "", className
+            "block px-2 pt-[11px] min-h-[46px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer",
+            errorText ? "border-red-500" : "",
+            className
           )}
           {...rest}
         />
@@ -103,15 +106,15 @@ const Textarea: React.FC<TextareaProps> = ({
         <label
           htmlFor={id}
           className={twMerge(
-            "absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-inherit px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[22px] peer-focus:top-0 peer-focus:scale-75 peer-focus:-translate-y-1/2 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            "absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-inherit px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[22px] peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
           )}
         >
           {label || name} {required && <span className="text-red-500">*</span>}
         </label>
       </div>
 
-      {(error || customError) && (
-        <span className="block text-red-500 text-xs mt-1.5">{customError || errorText}</span>
+      {errorText && (
+        <span className="block text-red-500 text-xs mt-1.5">{errorText}</span>
       )}
     </div>
   );

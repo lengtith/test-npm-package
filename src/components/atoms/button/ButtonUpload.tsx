@@ -77,12 +77,12 @@ const getColorSchemeClass = (colorScheme: keyof ColorClasses, variant: keyof Col
     : `${baseClass} ${colorClasses[colorScheme][variant]}`;
 };
 
-const getSizeClass = (size: "lg" | "md" | "sm" | "xs") => ({
+const getSizeClass = ({
   lg: "px-6 py-3 text-lg rounded-xl",
   md: "px-5 py-2 text-base rounded-lg",
   sm: "px-3 py-1 text-sm rounded-md",
   xs: "px-2 py-1 text-xs rounded"
-}[size]);
+});
 
 const ButtonUpload: React.FC<ButtonUploadProps> = ({
   children,
@@ -100,7 +100,8 @@ const ButtonUpload: React.FC<ButtonUploadProps> = ({
   type = "button",
   onFileSelect,
   accept,
-  name
+  name,
+  ...props
 }) => {
   const colorSchemeClass = getColorSchemeClass(
     colorScheme,
@@ -108,7 +109,7 @@ const ButtonUpload: React.FC<ButtonUploadProps> = ({
     isDisabled
   );
   // size style
-  const sizeClass = getSizeClass(size);
+  const sizeClass = getSizeClass[size];
   const variantClass = variant === "outline" ? "bg-transparent" : "";
   const cursorClass = isDisabled || isLoading ? "" : "cursor-pointer";
 
@@ -144,6 +145,7 @@ const ButtonUpload: React.FC<ButtonUploadProps> = ({
       disabled={isDisabled || isLoading}
       aria-disabled={isDisabled || isLoading ? "true" : "false"}
       name={name}
+      {...props}
     >
       <input
         type="file"

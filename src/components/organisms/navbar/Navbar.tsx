@@ -1,6 +1,5 @@
 import React from "react";
 import { Avatar, Icon, Menu } from "./../../../components";
-import logo from "./logo.png";
 
 export interface NavbarProps {
   expand?: boolean;
@@ -48,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({ expand, toggleSidebar }) => {
             </div>
 
             {/* Logo and Title */}
-            <img src={logo} alt="logo" className="w-10 h-10 rounded-full" />
+            <img src="./images/logo.png" alt="logo" className="w-10 h-10 rounded-full" />
             <h1 className="text-gray-800 font-semibold text-[26px]">
               SabaiCode
             </h1>

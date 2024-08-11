@@ -49,7 +49,9 @@ export type IconName =
   | "word"
   | "pdf"
   | "power-point"
-  | "logout";
+  | "logout"
+  | "user"
+  | "close";
 
 export interface Props extends IconProps {
   icon: IconName | string;

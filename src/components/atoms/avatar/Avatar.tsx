@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../../../components';
 
@@ -8,7 +8,7 @@ interface AvatarProps {
   isDisabled?: boolean;
   radius?: 'none' | 'sm' | 'md' | 'lg' | 'full';
   name?: string;
-  icon?: React.ReactNode;
+  icon?: string;
   className?: string;
   onClick?: () => void;
 }
@@ -33,22 +33,20 @@ const Avatar: React.FC<AvatarProps> = ({
   radius = 'full',
   isDisabled = false,
   name,
-  icon,
+  icon = 'user',
   className = '',
   onClick,
   ...props
 }) => {
-  const styleMemo = useMemo(() => {
-    const isDisabledStyles = isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer';
+  const isDisabledStyles = isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer';
 
-    return twMerge(
-      'flex justify-center items-center p-1 border-2 border-gray-300 bg-gray-200',
-      isDisabledStyles,
-      radiusClasses[radius],
-      sizeClasses[size],
-      className
-    );
-  }, [size, radius, isDisabled, className]);
+  const mergedClasses = twMerge(
+    'flex justify-center items-center p-1 border-2 border-gray-300 bg-gray-200',
+    isDisabledStyles,
+    radiusClasses[radius],
+    sizeClasses[size],
+    className
+  );
 
   const handleClick = isDisabled ? undefined : onClick;
 
@@ -59,18 +57,14 @@ const Avatar: React.FC<AvatarProps> = ({
           onClick={handleClick}
           src={src}
           alt={name || 'Avatar'}
-          className={styleMemo}
+          className={mergedClasses}
           {...props}
         />
-      ) :
-        (
-          <div
-            onClick={handleClick}
-            {...props}
-          >
-            <Icon icon="student" className={styleMemo} />
-          </div>
-        )}
+      ) : (
+        <div onClick={handleClick} className={mergedClasses} {...props}>
+          <Icon icon={icon} />
+        </div>
+      )}
     </div>
   );
 };

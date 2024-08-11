@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../../../components';
 import { IconName } from "../icon/Icon";
@@ -37,17 +37,14 @@ const ButtonIcon: React.FC<ButtonIconProps> = ({
   onClick,
   ...props
 }) => {
-  const styleMemo = useMemo(() => {
-    const isDisabledStyles = isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer';
-
-    return twMerge(
-      'flex justify-center items-center p-1 border-2 border-gray-300 bg-gray-200',
-      isDisabledStyles,
-      radiusClasses[radius],
-      sizeClasses[size],
-      className
-    );
-  }, [size, radius, isDisabled, className]);
+  const isDisabledStyles = isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer';
+  const styleMemo = twMerge(
+    'flex justify-center items-center p-1 border-2 border-gray-300 bg-gray-200',
+    isDisabledStyles,
+    radiusClasses[radius],
+    sizeClasses[size],
+    className
+  );
 
   return (
     <button

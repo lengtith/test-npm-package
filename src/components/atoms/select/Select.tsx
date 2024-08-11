@@ -82,7 +82,7 @@ const Select: React.FC<SelectProps> = ({
 
   const handleBlur = () => {
     setIsFocus(false);
-    console.log("2 ", isFocus);
+    
     if (required && (JSON.stringify(value).length === 2 || (Array.isArray(value) && value.length === 0))) {
       setError(true);
     }
@@ -128,22 +128,22 @@ const Select: React.FC<SelectProps> = ({
         onClick={handleFocus}
         tabIndex={0}
         className={twMerge(
-          "relative w-full min-h-[46px] flex items-center gap-2 px-4 border rounded-lg border-gray-300 bg-gray-50 outline-none focus:border-blue-500",
-          error ? "border-red-500" : ""
+          "relative w-full min-h-[46px] flex items-center gap-2 px-4 border rounded-lg border-gray-300 bg-gray-50 text-gray-500 outline-none focus:border-blue-500 focus:text-blue-500",
+          error ? "border-red-500 text-red-500" : ""
           , className)}
       >
         <label className={twMerge(
-          "absolute max-w-full text-gray-500 text-sm transition-all duration-300 transform z-0 origin-[0] px-2 start-1",
-          (isFocus || JSON.stringify(value).length > 2) ? "top-0 -translate-y-1/2 scale-75 text-blue-500 bg-inherit" : "top-1/2 -translate-y-1/2 scale-100 bg-transparent"
+          "absolute max-w-full  text-sm transition-all duration-300 transform z-0 origin-[0] px-2 start-1",
+          (isFocus || JSON.stringify(value).length > 2) ? "top-0 -translate-y-1/2 scale-75 bg-inherit" : "top-1/2 -translate-y-1/2 scale-100 bg-transparent"
         )}>
           {label} {required && <span className="text-red-500">*</span>}
         </label>
 
         <div className="flex flex-wrap flex-grow items-center gap-2 text-gray-900">
           {(multiple)
-            ? value.map(v => (
+            ? value.map((v, index) => (
               <div
-                key={v.id}
+                key={`select-${v?.id}`}
                 className="flex gap-1 items-center py-1 px-2 bg-gray-100 rounded-lg text-sm text-gray-900 leading-none"
               >
                 <span className="cursor-pointer">
@@ -189,8 +189,8 @@ const Select: React.FC<SelectProps> = ({
             dropdownDirection === 'up' ? '-top-full' : ''
           )}
         >
-          {items.map(item => (
-            <div key={item.id} className={twMerge(multiple ? "relative" : "", "cursor-pointer")}>
+          {items.map((item, index) => (
+            <div key={`dropdown-${item?.id}`} className={twMerge(multiple ? "relative" : "", "cursor-pointer")}>
               {renderDropdownItem
                 ? renderDropdownItem(item, handleActiveItemSelected(item), handleSelectItem)
                 : <div className="p-2 hover:bg-gray-100" onClick={() => handleSelectItem(item)}>{item.id}</div>}

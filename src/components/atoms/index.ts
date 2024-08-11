@@ -16,6 +16,6 @@ export * from "./skeleton";
 export * from "./switch";
 export * from "./quill"
 export * from "./table";
-export * from "./tabs";
+export * from "./tab";
 export * from "./textArea";
 export * from "./typography";

@@ -36,7 +36,7 @@ const Menu: React.FC<MenuProps> = ({ className, buttonContent, items }) => {
     <button
       key={index}
       className={twMerge(
-        "flex items-center min-w-full text-sm text-gray-900 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100")}
+        "flex items-center min-w-full text-sm text-gray-900 rounded-lg px-2.5 py-1.5 hover:bg-gray-100 focus:outline-none focus:bg-gray-100")}
       onClick={() => {
         if (item.onClick) {
           item.onClick();
@@ -57,7 +57,7 @@ const Menu: React.FC<MenuProps> = ({ className, buttonContent, items }) => {
       >
         {buttonContent}
       </button>
-      <div className={`absolute right-0 z-50 mt-2 min-w-32 max-w-fit bg-white rounded-lg shadow-lg p-1 transition-all duration-300 ease-in-out ${isOpen ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"}`}>
+      <div className={`absolute right-0 z-50 mt-2 min-w-32 max-w-fit bg-white rounded-lg shadow-lg p-0.5 transition-all duration-300 ease-in-out ${isOpen ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"}`}>
         {items.map(renderItem)}
       </div>
     </div>
