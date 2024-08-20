@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Icon, Menu } from "./../../../components";
+import { Avatar, Icon, Menu, MenuItem } from "./../../../components";
 
 export interface NavbarProps {
   expand?: boolean;
@@ -69,13 +69,34 @@ const Navbar: React.FC<NavbarProps> = ({ expand, toggleSidebar }) => {
         </div>
         <div className="px-8">
           <Menu
-            buttonContent={<Avatar
+            icon={<Avatar
               name="Avatar"
               radius="full"
               size="md"
               src="https://api.dicebear.com/9.x/adventurer/svg?seed=Cookie"
             />}
-            items={menuItems} />
+          >
+            <MenuItem>
+              <div className="w-max flex-none p-2 flex items-center space-x-2">
+                <Avatar
+                  name="Avatar"
+                  radius="full"
+                  size="md"
+                  src="https://api.dicebear.com/9.x/adventurer/svg?seed=Cookie"
+                />
+                <div className="flex items-start flex-col justify-start">
+                  <p className="text-sm">Nita</p>
+                  <p className="text-xs text-blue-500">nita@gmail.com</p>
+                </div>
+              </div>
+            </MenuItem>
+            <MenuItem>
+              <div className="p-2 flex items-center space-x-2 text-gray-900 hover:bg-gray-100">
+                <Icon icon="logout" size={16} />
+                <p>Logout</p>
+              </div>
+            </MenuItem>
+          </Menu>
         </div>
       </div>
     </div>

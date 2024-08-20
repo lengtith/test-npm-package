@@ -59,7 +59,7 @@ const Switch: React.FC<SwitchProps> = ({
 
   return (
     <label
-      className={twMerge("flex items-center gap-2 cursor-pointer", disabled && "opacity-50 cursor-not-allowed")}
+      className={twMerge("w-fit flex items-center gap-2 cursor-pointer", disabled && "opacity-50 cursor-not-allowed")}
     >
       <input
         id={id}

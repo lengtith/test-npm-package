@@ -1,133 +1,192 @@
-import React, { ReactNode, RefObject, useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useRef, useEffect, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import { Icon } from "../../../components";
 import { twMerge } from 'tailwind-merge';
 
 type Item = any;
 
-export type DropdownProps = {
-  label?: string;
-  required?: boolean;
-  items: Item[];
-  className?: string;
-  isLoading?: boolean;
-  isSubmitted?: boolean;
-  customError?: string;
+interface DropdownContextType {
   value?: Item;
   onChange: (item: Item) => void;
-  renderSelectItem?: (item: Item) => ReactNode;
-  renderDropdownItem?: (item: Item, isSelected: boolean, handleSelect: (item: Item) => void) => ReactNode;
+}
+
+const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
+
+export const useDropdownContext = () => {
+  const context = useContext(DropdownContext);
+  if (!context) {
+    throw new Error("DropdownItem must be used within a Dropdown");
+  }
+  return context;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({
+export type DropdownProps = {
+  label?: string;
+  className?: string;
+  value?: Item;
+  onChange?: (item: Item) => void;
+  renderSelectItem?: (item: Item) => ReactNode;
+  children?: ReactNode;
+};
+
+export const Dropdown: React.FC<DropdownProps> = ({
   label = "",
   value,
-  items,
   className,
-  renderSelectItem,
   onChange,
-  renderDropdownItem
+  renderSelectItem,
+  children,
 }) => {
+  const [internalValue, setInternalValue] = useState<Item | undefined>(value);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dropdownDirection, setDropdownDirection] = useState<'up' | 'down'>('down');
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [dropdownPortal, setDropdownPortal] = useState(false);
+  const [menuStyles, setMenuStyles] = useState<React.CSSProperties>({});
+
+  const currentValue = value ?? internalValue;
 
   const handleSelectItem = (item: Item) => {
     setTimeout(() => {
-      onChange(item);
+      if (onChange) {
+        onChange(item);
+      } else {
+        setInternalValue(item);
+      }
       setIsFocused(false);
+      setTimeout(() => {
+        setDropdownPortal(false);
+      }, 300);
     }, 0);
   };
-  const isActiveItem = (item: Item) => value?.id === item.id;
 
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-  };
-
-  useEffect(() => {
-    setIsFocused(false);
-    if (!value && items.length > 0 && !label) {
-      onChange(items[0]);
+  const handleToggle = () => {
+    if (dropdownPortal) {
+      setIsFocused(false);
+      setTimeout(() => setDropdownPortal(false), 300);
+    } else {
+      setDropdownPortal(true);
+      setTimeout(() => setIsFocused(true), 10);
     }
-  }, [value, items, onChange]);
+  };
 
-  useEffect(() => {
-    const checkDropdownDirection = () => {
-      if (!dropdownRef.current || !containerRef.current) return;
-
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const dropdownHeight = dropdownRef.current.offsetHeight;
-
-      const spaceBelow = window.innerHeight - containerRect.bottom;
-      const spaceAbove = containerRect.top;
-
-      if (spaceBelow >= dropdownHeight) {
-        setDropdownDirection('down');
-      } else if (spaceAbove >= dropdownHeight) {
-        setDropdownDirection('up');
-      } else {
-        setDropdownDirection(spaceBelow > spaceAbove ? 'down' : 'up');
-      }
-    };
-
-    window.addEventListener('resize', checkDropdownDirection);
-    checkDropdownDirection();
-
-    return () => {
-      window.removeEventListener('resize', checkDropdownDirection);
-    };
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      containerRef.current &&
+      !containerRef.current.contains(event.target as Node) &&
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsFocused(false);
+      setTimeout(() => setDropdownPortal(false), 300);
+    }
   }, []);
 
+  useEffect(() => {
+    if (dropdownPortal) {
+      document.addEventListener('mousedown', handleClickOutside);
+
+      if (dropdownRef.current && containerRef.current) {
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const dropdownRect = dropdownRef.current.getBoundingClientRect();
+        const top = window.innerHeight - containerRect.bottom >= dropdownRect.height
+          ? containerRect.bottom + window.scrollY
+          : containerRect.top - dropdownRect.height + window.scrollY - 16;
+        const left = containerRect.left + window.scrollX;
+        const width = containerRect.width > dropdownRect.width ? containerRect.width : dropdownRect.width;
+
+        setMenuStyles({ width, top, left });
+      }
+    }
+
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownPortal, handleClickOutside]);
+
+  const dropdownContent = dropdownPortal && ReactDOM.createPortal(
+    <ul
+      ref={dropdownRef}
+      style={menuStyles}
+      className={twMerge(
+        "text-gray-900 transition-all duration-300 ease-in-out absolute w-fit mt-1.5 max-h-64 overflow-y-auto border border-gray-300 bg-white rounded-lg z-20",
+        isFocused ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+      )}
+      role="listbox" // ARIA: Role for the list of options
+    >
+      {children}
+    </ul>,
+    document.body
+  );
+
   return (
-    <div className={twMerge("relative", className)}>
+    <DropdownContext.Provider
+      value={{
+        value: currentValue,
+        onChange: handleSelectItem,
+      }}
+    >
       <div
         ref={containerRef}
-        onBlur={handleBlur}
-        onClick={handleFocus}
+        onClick={handleToggle}
         tabIndex={0}
+        role="combobox" // ARIA: Role for combobox
+        aria-haspopup="listbox" // ARIA: Indicates that this element controls a listbox
+        aria-expanded={dropdownPortal} // ARIA: Indicates whether the dropdown is open
+        aria-label={label} // ARIA: Optional, gives the dropdown a name if there's no visible label
         className={twMerge(
-          "relative w-full min-h-[46px] flex items-center gap-2 px-4 border rounded-lg border-gray-300 bg-gray-50 outline-none focus:border-blue-500"
+          "relative w-full min-h-[46px] flex items-center gap-2 px-4 border rounded-lg border-gray-300 bg-gray-50 outline-none focus:border-blue-500",
+          className
         )}
       >
-        <div className="flex flex-grow items-center gap-2 text-gray-900">
-          <div className="text-gray-900">
-            {label && !value
+        <div className="flex flex-grow items-center gap-2 text-sm text-gray-900">
+          <div>
+            {label && !currentValue
               ? <span>{label}</span>
-              : renderSelectItem && value
-                ? renderSelectItem(value)
-                : <span>{value?.id}</span>
+              : renderSelectItem && currentValue
+                ? renderSelectItem(currentValue)
+                : React.Children.map(children, (child: any) => {
+                  if (child?.props?.value === currentValue) {
+                    return child?.props.children;
+                  }
+                })
             }
           </div>
         </div>
         <div>
           <Icon
             icon="dropdown"
-            className={`size-4 text-gray-500 transition-all duration-300 ease-in-out ${isFocused ? "rotate-180" : "rotate-0"}`}
+            size={14}
+            className={`text-gray-500 transition-all duration-300 ease-in-out ${isFocused ? "rotate-180" : "rotate-0"}`}
           />
         </div>
-        <ul
-          ref={dropdownRef}
-          className={twMerge(
-            "text-gray-900 transition-all duration-300 ease-in-out absolute w-full left-0 mt-2 max-h-64 overflow-y-auto border border-gray-300 bg-white rounded-lg z-20",
-            isFocused ? "opacity-100 translate-y-0 visible" : "opacity-0 translate-y-2 invisible",
-            dropdownDirection === 'up' ? '-top-full mt-0 mb-2' : 'top-full'
-          )}
-        >
-          {items.map(item => (
-            <div key={item.id} className="cursor-pointer">
-              {renderDropdownItem
-                ? renderDropdownItem(item, isActiveItem(item), handleSelectItem)
-                : <div className="p-2 bg-white text-black hover:bg-gray-50" onClick={() => handleSelectItem(item)}>{item.id}</div>}
-            </div>
-          ))}
-        </ul>
       </div>
-    </div>
+
+      {/* Dropdown Items */}
+      {dropdownContent}
+    </DropdownContext.Provider>
   );
 };
 
-export default Dropdown;
+export type DropdownItemProps = {
+  value: Item;
+  children?: ReactNode;
+};
+
+export const DropdownItem: React.FC<DropdownItemProps> = ({ value, children }) => {
+  const { value: selectedValue, onChange } = useDropdownContext();
+
+  const isSelected = JSON.stringify(selectedValue) === JSON.stringify(value);
+
+  return (
+    <li
+      className={twMerge(
+        "cursor-pointer p-2 bg-white text-black hover:bg-gray-50",
+        isSelected ? "bg-blue-50" : ""
+      )}
+      onClick={() => onChange(value)}
+      role="option" // ARIA: Role for an option in the list
+      aria-selected={isSelected} // ARIA: Indicates if this option is selected
+    >
+      {children}
+    </li>
+  );
+};

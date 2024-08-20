@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { twMerge } from "tailwind-merge";
 import ReactDOM from 'react-dom';
-import { Button, ButtonIcon } from "../button";
+import { Button } from "../button";
 import { Icon } from "../icon";
 
 interface ModalProps {

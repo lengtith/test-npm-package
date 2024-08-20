@@ -1,2 +1,2 @@
-import Dropdown from "./Dropdown";
-export { Dropdown };
+import {Dropdown, DropdownItem} from "./Dropdown";
+export { Dropdown, DropdownItem };

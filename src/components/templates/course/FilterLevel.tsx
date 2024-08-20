@@ -1,6 +1,6 @@
 import React from "react";
 import { LEVEL_OPTIONS } from "./course";
-import { Dropdown } from "../../../components";
+import { Dropdown, DropdownItem } from "../../../components";
 
 interface FilterLevelProps {
   onChange: (value: string) => void;
@@ -9,20 +9,15 @@ interface FilterLevelProps {
 const FilterLevel: React.FC<FilterLevelProps> = ({ onChange }) => {
   return (
     <Dropdown
-      items={[{ label: "All Level", value: "" }, ...LEVEL_OPTIONS]}
+      label="All Levels"
       onChange={onChange}
-      className="w-72"
-      renderSelectItem={(item) => <span>{item.name}</span>}
-      renderDropdownItem={(item, isSelected, handleSelectItem) => (
-        <div
-          className={`p-2 bg-white text-black hover:bg-gray-50`}
-          onClick={() => handleSelectItem(item.value)}
-        >
+    >
+      {LEVEL_OPTIONS.map((item) => (
+        <DropdownItem key={item.value} value={item.value}>
           {item.label}
-        </div>
-      )}
-      customError="Please select an item"
-    />
+        </DropdownItem>
+      ))}
+    </Dropdown>
   );
 };
 

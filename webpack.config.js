@@ -53,10 +53,10 @@ module.exports = (env, argv) => {
         }
       ]
     },
-    // externals: {
-    //   react: 'react',
-    //   'react-dom': 'react-dom'
-    // },
+    externals: {
+      react: 'react',
+      'react-dom': 'react-dom'
+    },
     devServer: { port: 3030 },  // Configuration for webpack-dev-server
     devtool: isProduction ? false : 'eval-source-map',  // Generate source maps only for development
   }

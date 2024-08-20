@@ -1,2 +1,3 @@
 import Select from "./Select";
-export { Select };
+import SelectItem from "./SelectItem";
+export { Select, SelectItem };

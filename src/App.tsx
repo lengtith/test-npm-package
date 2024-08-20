@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Button, Drawer, DrawerHeader, Input, LoadingModal, Modal, Select, Switch, Textarea } from "./components";
 
 interface Item {
   id: number | string;
@@ -16,7 +15,7 @@ const App = () => {
 
   return (
     <div className="container mx-auto p-20">
-      <Select multiple onChange={() => { }} value={selectedItem} items={sampleItems}></Select>
+      App
     </div>
   )
 }
