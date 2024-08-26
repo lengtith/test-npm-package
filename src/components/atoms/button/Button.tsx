@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../../../components';
 import { IconName } from "../icon/Icon";
@@ -7,7 +7,7 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   className?: string;
   colorScheme?: "primary" | "secondary" | "error" | "warning" | "success";
-  onClick?: (value?: any) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   size?: "lg" | "md" | "sm" | "xs";
   variant?: "solid" | "outline" | "ghost" | "link";
   icon?: IconName;
@@ -18,10 +18,10 @@ interface ButtonProps {
 
 const colorClasses = {
   primary: {
-    solid: "bg-blue-500 text-white hover:bg-blue-400",
-    outline: "text-blue-500 border border-blue-500 hover:bg-blue-100",
-    ghost: "text-blue-500 hover:bg-blue-100",
-    link: "text-blue-500 hover:underline"
+    solid: "bg-primary text-white hover:bg-[#5652a6]",
+    outline: "text-primary border border-primary hover:bg-blue-100",
+    ghost: "text-primary hover:bg-blue-100",
+    link: "text-primary hover:underline"
   },
   secondary: {
     solid: "bg-gray-500 text-white hover:bg-gray-400",
@@ -56,7 +56,7 @@ const sizeClasses = {
   xs: "px-2 py-1 text-xs rounded"
 };
 
-const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
+const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>(({
   type = "button",
   children,
   className,
@@ -69,7 +69,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
   iconPosition = "right",
   isDisabled = false,
   ...props
-}) => {
+}, ref) => {
   const colorSchemeClass = colorClasses[colorScheme][variant];
   const sizeClass = sizeClasses[size];
   const disabledClass = "bg-gray-300 text-gray-500 cursor-not-allowed border rounded-lg";
@@ -82,6 +82,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
 
   return (
     <button
+      ref={ref}
       type={type}
       className={buttonClassNames}
       onClick={onClick}
@@ -98,6 +99,8 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
       )}
     </button>
   );
-};
+});
+
+Button.displayName = 'Button';
 
 export default Button;

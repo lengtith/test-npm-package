@@ -19,7 +19,7 @@ const ModalDelete: React.FC<ModalDeleteProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={()=>setIsOpen(false)} size="lg">
+    <Modal isOpen={isOpen} onClose={()=>setIsOpen(false)} size="xl">
       <form
         onSubmit={(e) => handleDelete(e)}
         className='flex flex-col gap-5 p-6 bg-white'

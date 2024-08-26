@@ -17,7 +17,7 @@ const meta: Meta<typeof CheckboxGroup> = {
       options: ['horizontal', 'vertical'],
     },
     required: { control: 'boolean' },
-    isInvalid: { control: 'boolean' },
+    isSubmitted: { control: 'boolean' },
     children: { control: undefined },
   },
 };
@@ -32,7 +32,7 @@ export const Vertical: Story = {
     value: [],
     direction: 'vertical',
     required: false,
-    isInvalid: false,
+    isSubmitted: false,
     children: (
       <>
         <Checkbox value="option1">Option 1</Checkbox>
@@ -49,7 +49,7 @@ export const Horizontal: Story = {
     value: [],
     direction: 'horizontal',
     required: false,
-    isInvalid: false,
+    isSubmitted: false,
     children: (
       <>
         <Checkbox value="option1">Option 1</Checkbox>
@@ -66,7 +66,7 @@ export const Required: Story = {
     value: [],
     direction: 'vertical',
     required: true,
-    isInvalid: false,
+    isSubmitted: false,
     children: (
       <>
         <Checkbox value="option1">Option 1</Checkbox>
@@ -83,7 +83,7 @@ export const Invalid: Story = {
     value: [],
     direction: 'vertical',
     required: false,
-    isInvalid: true,
+    isSubmitted: true,
     children: (
       <>
         <Checkbox value="option1">Option 1</Checkbox>

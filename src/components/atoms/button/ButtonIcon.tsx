@@ -10,7 +10,7 @@ interface ButtonIconProps {
   name?: string;
   icon?: IconName;
   className?: string;
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const sizeClasses = {

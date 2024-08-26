@@ -91,7 +91,6 @@ const Select = <T,>({
         setDropdownStyles({ width, top, left });
       }
     }
-
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dropdownVisible, handleClickOutside]);
 
@@ -111,18 +110,26 @@ const Select = <T,>({
   };
 
   const renderSelected = (item: T) =>
-    renderSelectedItem ? renderSelectedItem(item) : <span>{String(item)}</span>;
+    renderSelectedItem
+      ? renderSelectedItem(item)
+      : React.Children.map(children, (child: any) => {
+        if (child?.props?.value === item) {
+          return child?.props.children;
+        }
+      });
 
   const ItemSelect = (
     <div className="flex flex-grow items-center flex-wrap gap-2 text-sm text-gray-900">
       {Array.isArray(value)
         ? value.map((v, index) =>
-          <div key={index} className="flex items-center space-x-1 px-2 py-1 bg-white border border-gray-100 rounded-full">{renderSelected(v)}
+          <div key={index} className="flex items-center gap-1 px-2 py-1 bg-white border border-gray-100 rounded-full">
+            {renderSelected(v)}
             <span className="flex items-center justify-center bg-gray-100 rounded-full w-4 h-4" onClick={() => handleItemClick(v)}>
               <Icon icon="close" size={10} />
             </span>
           </div>)
-        : renderSelected(value)}
+        : renderSelected(value)
+      }
     </div>
   );
 
@@ -196,7 +203,7 @@ const Select = <T,>({
         aria-expanded={dropdownVisible}
         tabIndex={0}
         className={twMerge(
-          "relative w-full min-h-[46px] flex items-center gap-2 px-4 border rounded-lg border-gray-300 bg-gray-50 text-gray-500 outline-none focus:border-blue-500 focus:text-blue-500",
+          "relative w-full min-h-[46px] flex items-center gap-2 px-2 border rounded-lg border-gray-300 bg-gray-50 text-gray-500 outline-none focus:border-blue-500 focus:text-blue-500",
           error ? "border-red-500 text-red-500" : ""
           , className)}
       >

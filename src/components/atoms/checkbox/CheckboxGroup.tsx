@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, PropsWithChildren, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import Checkbox, { CheckboxProps } from './Checkbox'; // Adjust the import path as necessary
 
@@ -8,38 +8,45 @@ interface CheckboxGroupProps {
   onChange?: (selectedValues: string[]) => void;
   direction?: 'horizontal' | 'vertical';
   required?: boolean;
-  isInvalid?: boolean;
-  children?: React.ReactNode;
-  className?: string
+  isSubmitted?: boolean;
+  className?: string;
+  customError?: string;
 }
 
-const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+const CheckboxGroup: React.FC<PropsWithChildren<CheckboxGroupProps>> = ({
   label = "",
   value = [],
   onChange,
   direction = 'vertical',
   required = false,
-  isInvalid = false,
+  isSubmitted = false,
   className,
+  customError,
   children,
 }) => {
+  const [isError, setIsError] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isSubmitted && required && value.length === 0) {
+      setIsError(true);
+    } else {
+      setIsError(false);
+    }
+  }, [isSubmitted, required, value]);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value: checkboxValue, checked } = e.target;
-    let newValues = [...value];
+    const newValues = checked
+      ? [...value, checkboxValue]
+      : value.filter(v => v !== checkboxValue);
 
-    if (checked) {
-      newValues.push(checkboxValue);
-    } else {
-      newValues = newValues.filter(v => v !== checkboxValue);
-    }
-
-    onChange?.(newValues); // Optional chaining to ensure onChange is defined
+    onChange?.(newValues); // Invoke onChange if defined
   };
 
-  const checkboxes = React.Children.map(children, child => {
+  const checkboxes = React.Children.map(children, (child) => {
     if (React.isValidElement<CheckboxProps>(child) && child.type === Checkbox) {
       return React.cloneElement(child, {
-        isChecked: value.includes(child.props.value || ""),
+        checked: value.includes(child.props.value || ""),
         onChange: handleChange,
       } as CheckboxProps);
     }
@@ -47,16 +54,18 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   });
 
   return (
-    <fieldset className={twMerge(className)}>
-      <legend className={twMerge("mb-2", isInvalid && 'text-red-500')}>
-        {label} {required && <span aria-hidden="true">🌟</span>}
-      </legend>
-      <div className={twMerge("flex ", direction === 'horizontal' ? " space-x-4" : "flex-col space-y-2")}>
+    <fieldset className={twMerge("space-y-2", className)}>
+      {label && (
+        <legend className={(isError ? 'text-red-500': '')}>
+          {label} {required && <span className="text-red-500" aria-hidden="true">*</span>}
+        </legend>
+      )}
+      <div className={twMerge("flex", direction === 'horizontal' ? "space-x-4" : "flex-col space-y-2")}>
         {checkboxes}
       </div>
-      {isInvalid && (
-        <span className="text-red-500" role="alert" aria-live="assertive">
-          At least one option must be selected.
+      {isError && (
+        <span className="block text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
+          {customError || 'At least one option must be selected.'}
         </span>
       )}
     </fieldset>

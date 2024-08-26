@@ -1,2 +1,3 @@
 import Avatar from "./Avatar";
-export { Avatar }; 
+import AvatarGroup from "./AvatarGroup";
+export { Avatar, AvatarGroup }; 

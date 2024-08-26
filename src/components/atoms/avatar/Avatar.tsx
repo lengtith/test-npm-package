@@ -1,67 +1,105 @@
-import React from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../../../components';
+import { AvatarContext } from './AvatarGroup'; // Assuming AvatarGroup is in the same directory
 
-interface AvatarProps {
+export interface AvatarProps {
   src?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
   isDisabled?: boolean;
+  isBordered?: boolean;
   radius?: 'none' | 'sm' | 'md' | 'lg' | 'full';
   name?: string;
   icon?: string;
   className?: string;
   onClick?: () => void;
+  children?: React.ReactNode;
 }
 
-const sizeClasses = {
-  sm: 'h-10 w-10',
-  md: 'h-12 w-12',
-  lg: 'h-14 w-14'
+// Size classes for the avatar
+const SIZE_CLASSES = {
+  xs: 'h-6 w-6 text-xs',
+  sm: 'h-8 w-8 text-sm',
+  md: 'h-10 w-10 text-base',
+  lg: 'h-14 w-14 text-lg',
 };
 
-const radiusClasses = {
+// Color classes for the avatar border
+const COLOR_CLASSES = {
+  default: '',
+  primary: 'border-blue-500',
+  secondary: 'border-indigo-500',
+  success: 'border-green-500',
+  warning: 'border-yellow-500',
+  danger: 'border-red-500',
+};
+
+// Border radius classes for the avatar
+const RADIUS_CLASSES = {
   none: 'rounded-none',
   sm: 'rounded-sm',
   md: 'rounded-md',
   lg: 'rounded-lg',
-  full: 'rounded-full'
+  full: 'rounded-full',
 };
 
-const Avatar: React.FC<AvatarProps> = ({
+const Avatar: React.FC<PropsWithChildren<AvatarProps>> = ({
   src,
-  size = 'md',
-  radius = 'full',
-  isDisabled = false,
+  size,
+  color,
+  radius,
+  isDisabled,
+  isBordered,
   name,
   icon = 'user',
   className = '',
   onClick,
+  children,
   ...props
 }) => {
-  const isDisabledStyles = isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer';
+  // Fetch global Avatar context values, if any
+  const context = useContext(AvatarContext);
 
+  // Fallback to context values if props are not provided
+  const finalSize = size || context?.size || 'sm';
+  const finalColor = color || context?.color || 'default';
+  const finalRadius = radius || context?.radius || 'full';
+  const finalIsDisabled = isDisabled ?? context?.isDisabled ?? false;
+  const finalIsBordered = isBordered ?? context?.isBordered ?? false;
+
+  // Combine classes using tailwind-merge and apply conditional styling for disabled state
   const mergedClasses = twMerge(
-    'flex justify-center items-center p-1 border-2 border-gray-300 bg-gray-200',
-    isDisabledStyles,
-    radiusClasses[radius],
-    sizeClasses[size],
+    'flex justify-center items-center bg-white',
+    finalIsDisabled ? 'cursor-default opacity-75' : 'cursor-pointer opacity-100',
+    finalIsBordered ? `border-2 ${COLOR_CLASSES[finalColor]}` : '',
+    RADIUS_CLASSES[finalRadius],
+    SIZE_CLASSES[finalSize],
     className
   );
 
-  const handleClick = isDisabled ? undefined : onClick;
+  // Handle click events, preventing clicks when disabled
+  const handleClick = finalIsDisabled ? undefined : onClick;
 
   return (
-    <div aria-disabled={isDisabled ? 'true' : 'false'}>
+    <div aria-disabled={finalIsDisabled} onClick={handleClick}
+      title={name || ''}>
       {src ? (
+        // If `src` is provided, render an image
         <img
-          onClick={handleClick}
           src={src}
           alt={name || 'Avatar'}
           className={mergedClasses}
           {...props}
         />
+      ) : children ? (
+        // If children are provided, render the children
+        <div className={mergedClasses} {...props}>
+          {children}
+        </div>
       ) : (
-        <div onClick={handleClick} className={mergedClasses} {...props}>
+        // Otherwise, render an icon placeholder
+        <div className={mergedClasses} {...props}>
           <Icon icon={icon} />
         </div>
       )}

@@ -48,7 +48,7 @@ const SelectItem = <T,>({ value, disabled = false, children }: SelectItemProps<T
     >
       <span>{children}</span>
       
-      {isSelected && (
+      {isSelected && multiple && (
         <span className="flex items-center justify-center w-5 h-5 bg-blue-500 text-white rounded-full">
           <Icon icon="tick" size={14} />
         </span>

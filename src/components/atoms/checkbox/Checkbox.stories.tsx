@@ -9,7 +9,7 @@ const meta: Meta<typeof Checkbox> = {
   tags: ['autodocs'],
   component: Checkbox,
   argTypes: {
-    isChecked: { control: 'boolean' },
+    checked: { control: 'boolean' },
     value: { control: 'text' },
     size: {
       control: 'select',
@@ -36,7 +36,7 @@ export const Small: Story = {
     radius: 'sm',
     disabled: false,
     children: 'Small Checkbox',
-    isChecked: false,
+    checked: false,
   },
 };
 
@@ -46,7 +46,7 @@ export const Medium: Story = {
     radius: 'md',
     disabled: false,
     children: 'Medium Checkbox',
-    isChecked: false,
+    checked: false,
   },
 };
 
@@ -56,7 +56,7 @@ export const Large: Story = {
     radius: 'lg',
     disabled: false,
     children: 'Large Checkbox',
-    isChecked: false,
+    checked: false,
   },
 };
 
@@ -66,7 +66,7 @@ export const FullRadius: Story = {
     radius: 'full',
     disabled: false,
     children: 'Full Radius Checkbox',
-    isChecked: false,
+    checked: false,
   },
 };
 
@@ -76,7 +76,7 @@ export const Disabled: Story = {
     radius: 'md',
     disabled: true,
     children: 'Disabled Checkbox',
-    isChecked: false,
+    checked: false,
   },
 };
 
@@ -86,7 +86,7 @@ export const Checked: Story = {
     radius: 'md',
     disabled: false,
     children: 'Checked Checkbox',
-    isChecked: true,
+    checked: true,
   },
 };
 
@@ -97,6 +97,6 @@ export const CustomClass: Story = {
     disabled: false,
     children: 'Custom Class Checkbox',
     className: "text-sm text-blue-500",
-    isChecked: true,
+    checked: true,
   },
 };
